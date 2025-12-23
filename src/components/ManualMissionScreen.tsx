@@ -14,9 +14,6 @@ export const ManualMissionScreen = ({ players, onComplete }: ManualMissionScreen
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const currentMission = missions[currentIndex] || '';
-  const completedCount = Object.keys(missions).filter(
-    (key) => missions[parseInt(key)]?.trim().length > 0
-  ).length;
   const isLast = currentIndex === numberOfMissions - 1;
   const canProceed = currentMission.trim().length > 0;
 
