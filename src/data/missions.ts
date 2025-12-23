@@ -1,17 +1,18 @@
 // Liste de 100 missions prédéfinies pour le mode sans clé OpenAI
+// Missions adaptées pour être jouées en famille, entre amis et collègues
 export const PREDEFINED_MISSIONS = [
-  "Fais en sorte que ta cible dise 'Je suis un ninja secret' en public",
-  "Ta cible doit faire semblant d'être un robot pendant 30 secondes",
-  "Fais dire à ta cible 'Je crois aux licornes' devant au moins 2 personnes",
-  "Ta cible doit chanter une chanson d'enfance à voix haute",
-  "Fais en sorte que ta cible fasse le signe de paix avec les deux mains en l'air",
-  "Ta cible doit dire 'Je suis le meilleur joueur ici' de manière convaincante",
+  "Fais en sorte que ta cible dise 'C'est moi le meilleur !' avec enthousiasme",
+  "Ta cible doit faire semblant de parler au téléphone avec quelqu'un pendant 30 secondes",
+  "Fais dire à ta cible 'Je suis un ninja secret' en chuchotant",
+  "Ta cible doit chanter 'Joyeux anniversaire' à voix haute",
+  "Fais en sorte que ta cible fasse le signe de paix avec les deux mains",
+  "Ta cible doit dire 'Je suis le champion ici' de manière convaincante",
   "Fais dire à ta cible 'Je danse mieux que personne' puis faire 3 pas de danse",
-  "Ta cible doit faire semblant de parler au téléphone avec un ami imaginaire",
+  "Ta cible doit faire semblant de prendre une photo avec un appareil invisible",
   "Fais en sorte que ta cible dise 'Je suis un super-héros en formation'",
   "Ta cible doit faire le geste de voler comme un avion avec les bras",
   "Fais dire à ta cible 'Je peux communiquer avec les animaux' puis faire un bruit d'animal",
-  "Ta cible doit faire semblant d'être un chat pendant 20 secondes",
+  "Ta cible doit faire semblant d'être un chat pendant 10 secondes",
   "Fais en sorte que ta cible dise 'Je suis un espion international' avec un accent",
   "Ta cible doit faire le geste de tirer avec les doigts en disant 'Pew pew'",
   "Fais dire à ta cible 'Je suis un magicien' puis faire semblant de faire de la magie",
@@ -36,7 +37,7 @@ export const PREDEFINED_MISSIONS = [
   "Ta cible doit faire le geste de jouer du piano invisible",
   "Fais dire à ta cible 'Je suis un roi/reine' puis faire une révérence",
   "Ta cible doit faire semblant d'être un kangourou qui saute",
-  "Fais en sorte que ta cible dise 'Je suis un scientifique fou' puis faire un rire diabolique",
+  "Fais en sorte que ta cible dise 'Je suis un scientifique fou' puis faire un rire amusant",
   "Ta cible doit faire le geste de tirer à l'arc invisible",
   "Fais dire à ta cible 'Je suis un danseur professionnel' puis faire quelques pas",
   "Ta cible doit faire semblant d'être un éléphant qui barrit",
@@ -111,4 +112,3 @@ export const getRandomMission = (): string => {
   const randomIndex = Math.floor(Math.random() * PREDEFINED_MISSIONS.length);
   return PREDEFINED_MISSIONS[randomIndex];
 };
-
