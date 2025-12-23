@@ -1,7 +1,10 @@
 const { spawn } = require('child_process');
-const port = process.env.PORT || 3000;
+const path = require('path');
 
-const serve = spawn('npx', ['serve', '-s', 'dist', '-l', port.toString()], {
+const port = process.env.PORT || 3000;
+const servePath = path.join(__dirname, 'node_modules', '.bin', 'serve');
+
+const serve = spawn(servePath, ['-s', 'dist', '-l', port.toString()], {
   stdio: 'inherit',
   shell: true
 });
@@ -12,6 +15,6 @@ serve.on('error', (err) => {
 });
 
 serve.on('exit', (code) => {
-  process.exit(code);
+  process.exit(code || 0);
 });
 
