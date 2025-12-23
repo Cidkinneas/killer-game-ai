@@ -1,4 +1,4 @@
-import { Play, Users, Target, Sparkles } from 'lucide-react';
+import { Play, Target, Sparkles } from 'lucide-react';
 
 interface HomeScreenProps {
   onStart: () => void;

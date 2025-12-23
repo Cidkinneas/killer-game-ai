@@ -1,4 +1,4 @@
-import { GameConfig, Player } from '../types';
+import { Player } from '../types';
 
 const API_KEY_STORAGE = 'killer_ai_api_key';
 const TEMPERATURE_STORAGE = 'killer_ai_temperature';
