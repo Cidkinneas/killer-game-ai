@@ -1,5 +1,5 @@
 import { Player, Mission } from '../types';
-import { getRandomMission, PREDEFINED_MISSIONS_COUNT } from '../data/missions';
+import { PREDEFINED_MISSIONS, PREDEFINED_MISSIONS_COUNT } from '../data/missions';
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
@@ -77,6 +77,12 @@ export const generateAllMissions = async (
   // Mélanger les joueurs de manière aléatoire avec Fisher-Yates
   const shuffled = shuffleArray(players);
   
+  // Pour le mode sans clé : mélanger les missions prédéfinies une seule fois
+  let shuffledMissions: string[] = [];
+  if (!useOpenAI) {
+    shuffledMissions = shuffleArray([...PREDEFINED_MISSIONS]);
+  }
+  
   const missions: Mission[] = [];
   
   for (let i = 0; i < shuffled.length; i++) {
@@ -96,10 +102,12 @@ export const generateAllMissions = async (
         target: target.name,
       });
     } else {
-      // Mode sans clé : utiliser une mission prédéfinie
+      // Mode sans clé : utiliser une mission prédéfinie (sans doublon)
       // Simuler un petit délai pour l'expérience utilisateur
       await new Promise(resolve => setTimeout(resolve, 100));
-      mission = getRandomMission();
+      // Utiliser la mission à l'index i modulo le nombre de missions disponibles
+      // Cela garantit qu'on utilise chaque mission une fois avant de réutiliser
+      mission = shuffledMissions[i % shuffledMissions.length];
     }
     
     missions.push({
