@@ -152,7 +152,7 @@ export const RevealScreen = ({
             tabIndex={0}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' }}
           >
-            {isHolding ? '👁️ Maintenir pour voir' : '👁️‍🗨️ Maintenir pour révéler (ou cliquer sur desktop)'}
+            {isHolding ? '👁️ Maintenir pour voir' : '👁️‍🗨️ Maintenir pour révéler'}
           </div>
         ) : (
           <div className="space-y-3">
