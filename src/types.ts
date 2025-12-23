@@ -22,5 +22,7 @@ export interface GameState {
   gameStarted: boolean;
 }
 
-export type Screen = 'home' | 'settings' | 'players' | 'generating' | 'reveal' | 'gameStarted';
+export type Screen = 'home' | 'settings' | 'players' | 'generating' | 'manualMissions' | 'reveal' | 'gameStarted';
+
+export type GenerationMode = 'openai' | 'predefined' | 'manual';
 

@@ -17,6 +17,7 @@ export const RevealScreen = ({
 }: RevealScreenProps) => {
   const [isWaiting, setIsWaiting] = useState(true);
   const [isHolding, setIsHolding] = useState(false);
+  const [isMissionRevealed, setIsMissionRevealed] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const isTouchDeviceRef = useRef(false);
 
@@ -29,11 +30,15 @@ export const RevealScreen = ({
     e.preventDefault();
     // Ne toggle que si ce n'est pas un appareil tactile
     if (!isTouchDeviceRef.current) {
-      setIsHolding(prev => !prev);
+      setIsHolding(prev => {
+        const newValue = !prev;
+        setIsMissionRevealed(newValue);
+        return newValue;
+      });
     }
   };
 
-  // Pour le mobile (touch) : maintenir pour révéler
+  // Pour le mobile (touch) : maintenir pour révéler, puis rester visible
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     isTouchDeviceRef.current = true;
@@ -42,11 +47,19 @@ export const RevealScreen = ({
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
+    // Sur mobile, une fois qu'on a touché, la mission reste révélée
+    if (isTouchDeviceRef.current) {
+      setIsMissionRevealed(true);
+    }
     setIsHolding(false);
   };
 
   const handleTouchCancel = (e: React.TouchEvent) => {
     e.preventDefault();
+    // Sur mobile, une fois qu'on a touché, la mission reste révélée
+    if (isTouchDeviceRef.current) {
+      setIsMissionRevealed(true);
+    }
     setIsHolding(false);
   };
 
@@ -111,7 +124,7 @@ export const RevealScreen = ({
 
         <div className="bg-gray-800 rounded-lg p-6 border-2 border-gray-700">
           <h3 className="text-sm font-medium text-gray-400 mb-4">Ta mission :</h3>
-          {isHolding ? (
+          {isHolding || isMissionRevealed ? (
             <div className="space-y-4">
               <Eye className="w-8 h-8 mx-auto text-green-500" />
               <p className="text-lg text-white leading-relaxed">{mission.mission}</p>
@@ -124,30 +137,40 @@ export const RevealScreen = ({
           )}
         </div>
 
-        <div
-          onClick={handleClick}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleTouchCancel}
-          className={`w-full py-4 rounded-lg font-semibold transition-colors text-center select-none cursor-pointer ${
-            isHolding
-              ? 'bg-green-600 hover:bg-green-700'
-              : 'bg-gray-700 hover:bg-gray-600'
-          }`}
-          role="button"
-          tabIndex={0}
-          style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' }}
-        >
-          {isHolding ? '👁️ Cliquer pour cacher' : '👁️‍🗨️ Cliquer pour révéler (ou maintenir sur mobile)'}
-        </div>
-
-        {isHolding && (
-          <button
-            onClick={handleMemorized}
-            className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors"
+        {!isMissionRevealed ? (
+          <div
+            onClick={handleClick}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
+            className={`w-full py-4 rounded-lg font-semibold transition-colors text-center select-none cursor-pointer ${
+              isHolding
+                ? 'bg-green-600 hover:bg-green-700'
+                : 'bg-gray-700 hover:bg-gray-600'
+            }`}
+            role="button"
+            tabIndex={0}
+            style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' }}
           >
-            J'ai mémorisé, cacher la mission
-          </button>
+            {isHolding ? '👁️ Maintenir pour voir' : '👁️‍🗨️ Maintenir pour révéler (ou cliquer sur desktop)'}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <button
+              onClick={handleMemorized}
+              className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors"
+            >
+              J'ai mémorisé, cacher la mission
+            </button>
+            {!isTouchDeviceRef.current && (
+              <button
+                onClick={() => setIsMissionRevealed(false)}
+                className="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition-colors text-sm"
+              >
+                Cacher la mission
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

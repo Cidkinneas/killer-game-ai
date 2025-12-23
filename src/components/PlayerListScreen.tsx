@@ -1,19 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, X, Users, Play, Settings, Trash2, Key, Sparkles } from 'lucide-react';
-import { Player } from '../types';
+import { Plus, X, Users, Play, Settings, Key, Sparkles, Edit3 } from 'lucide-react';
+import { Player, GenerationMode } from '../types';
 import { storage } from '../utils/storage';
 
 interface PlayerListScreenProps {
-  onGenerate: (players: Player[], useOpenAI: boolean) => void;
+  onGenerate: (players: Player[], mode: GenerationMode) => void;
   onSettings?: () => void;
 }
 
 export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenProps) => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(false);
-  const [useOpenAI, setUseOpenAI] = useState(false);
+  const [generationMode, setGenerationMode] = useState<GenerationMode>('predefined');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -60,16 +59,7 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
   };
 
   const handleConfirmGenerate = () => {
-    onGenerate(players, useOpenAI);
-  };
-
-  const handleReset = () => {
-    if (showResetConfirm) {
-      storage.clearAllData();
-      window.location.reload();
-    } else {
-      setShowResetConfirm(true);
-    }
+    onGenerate(players, generationMode);
   };
 
   return (
@@ -135,8 +125,8 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
                   <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-700 transition-colors">
                     <input
                       type="radio"
-                      checked={useOpenAI}
-                      onChange={() => setUseOpenAI(true)}
+                      checked={generationMode === 'openai'}
+                      onChange={() => setGenerationMode('openai')}
                       className="w-4 h-4 text-red-600"
                     />
                     <div className="flex-1">
@@ -152,8 +142,8 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
                   <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-700 transition-colors">
                     <input
                       type="radio"
-                      checked={!useOpenAI}
-                      onChange={() => setUseOpenAI(false)}
+                      checked={generationMode === 'predefined'}
+                      onChange={() => setGenerationMode('predefined')}
                       className="w-4 h-4 text-red-600"
                     />
                     <div className="flex-1">
@@ -163,6 +153,23 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
                       </div>
                       <p className="text-xs text-gray-400 mt-1">
                         100 missions prédéfinies amusantes
+                      </p>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <input
+                      type="radio"
+                      checked={generationMode === 'manual'}
+                      onChange={() => setGenerationMode('manual')}
+                      className="w-4 h-4 text-red-600"
+                    />
+                    <div className="flex-1">
+                      <div className="font-semibold text-white flex items-center gap-2">
+                        <Edit3 className="w-4 h-4" />
+                        Mode Manuel
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Créez vos propres missions pour chaque couple
                       </p>
                     </div>
                   </label>
@@ -206,44 +213,17 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
             </>
           )}
 
-          <div className="flex gap-2 pt-2 border-t border-gray-700">
-            {onSettings && (
+          {onSettings && (
+            <div className="pt-2 border-t border-gray-700">
               <button
                 onClick={onSettings}
-                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors text-gray-300 text-sm"
+                className="w-full py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors text-gray-300 text-sm"
               >
                 <Settings className="w-4 h-4" />
                 Paramètres
               </button>
-            )}
-            {showResetConfirm ? (
-              <div className="flex-1 bg-red-900/30 border border-red-700 rounded-lg p-2">
-                <p className="text-xs text-red-300 mb-2">Tout supprimer ?</p>
-                <div className="flex gap-1">
-                  <button
-                    onClick={handleReset}
-                    className="flex-1 py-1 bg-red-600 hover:bg-red-700 rounded text-xs font-semibold transition-colors"
-                  >
-                    Oui
-                  </button>
-                  <button
-                    onClick={() => setShowResetConfirm(false)}
-                    className="flex-1 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs font-semibold transition-colors"
-                  >
-                    Non
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={handleReset}
-                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors text-gray-300 text-sm"
-              >
-                <Trash2 className="w-4 h-4" />
-                Réinitialiser
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

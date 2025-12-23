@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Save, Key, ExternalLink, HelpCircle, Sparkles, Trash2 } from 'lucide-react';
+import { Save, Key, ExternalLink, HelpCircle, Sparkles } from 'lucide-react';
 import { storage } from '../utils/storage';
 
 interface SettingsScreenProps {
   onNext: () => void;
-  onReset?: () => void;
 }
 
-export const SettingsScreen = ({ onNext, onReset }: SettingsScreenProps) => {
+export const SettingsScreen = ({ onNext }: SettingsScreenProps) => {
   const [useOpenAI, setUseOpenAI] = useState(true);
   const [apiKey, setApiKey] = useState('');
   const [temperature, setTemperature] = useState(0.7);
   const [saved, setSaved] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
     const savedKey = storage.getApiKey();
@@ -41,23 +39,6 @@ export const SettingsScreen = ({ onNext, onReset }: SettingsScreenProps) => {
 
   const openApiKeyPage = () => {
     window.open('https://platform.openai.com/api-keys', '_blank');
-  };
-
-  const handleReset = () => {
-    if (showResetConfirm) {
-      storage.clearAllData();
-      setApiKey('');
-      setTemperature(0.7);
-      setUseOpenAI(true);
-      setShowResetConfirm(false);
-      if (onReset) {
-        onReset();
-      }
-      // Recharger la page pour réinitialiser complètement l'état
-      window.location.reload();
-    } else {
-      setShowResetConfirm(true);
-    }
   };
 
   return (
@@ -245,41 +226,6 @@ export const SettingsScreen = ({ onNext, onReset }: SettingsScreenProps) => {
               Continuer vers les joueurs
             </button>
           )}
-
-          {/* Bouton de réinitialisation */}
-          <div className="pt-4 border-t border-gray-700">
-            {showResetConfirm ? (
-              <div className="space-y-3">
-                <div className="bg-red-900/30 border border-red-700 rounded-lg p-4">
-                  <p className="text-sm text-red-300 mb-3">
-                    ⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ? Cette action est irréversible.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleReset}
-                      className="flex-1 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-semibold transition-colors"
-                    >
-                      Oui, tout supprimer
-                    </button>
-                    <button
-                      onClick={() => setShowResetConfirm(false)}
-                      className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-colors"
-                    >
-                      Annuler
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={handleReset}
-                className="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors text-gray-300"
-              >
-                <Trash2 className="w-5 h-5" />
-                Réinitialiser toutes les données
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </div>

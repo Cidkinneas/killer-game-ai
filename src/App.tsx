@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Screen, Player, Mission, GameState } from './types';
+import { Screen, Player, Mission, GameState, GenerationMode } from './types';
 import { storage } from './utils/storage';
 import { generateAllMissions } from './utils/openai';
 import { HomeScreen } from './components/HomeScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { PlayerListScreen } from './components/PlayerListScreen';
 import { GeneratingScreen } from './components/GeneratingScreen';
+import { ManualMissionScreen } from './components/ManualMissionScreen';
 import { RevealScreen } from './components/RevealScreen';
 import { GameStartedScreen } from './components/GameStartedScreen';
 
@@ -23,9 +24,16 @@ function App() {
     setScreen('players');
   };
 
-  const handleGenerate = async (players: Player[], useOpenAI: boolean) => {
+  const handleGenerate = async (players: Player[], mode: GenerationMode) => {
+    if (mode === 'manual') {
+      // Mode manuel : rediriger vers l'écran de création manuelle
+      setScreen('manualMissions');
+      return;
+    }
+
     const apiKey = storage.getApiKey();
     const temperature = storage.getTemperature();
+    const useOpenAI = mode === 'openai';
 
     if (useOpenAI && !apiKey) {
       setError('Veuillez configurer votre clé API dans les paramètres d\'abord.');
@@ -60,6 +68,43 @@ function App() {
       setError(err instanceof Error ? err.message : 'Erreur lors de la génération');
       setScreen('players');
     }
+  };
+
+  const handleManualMissionsComplete = (missionTexts: string[]) => {
+    const players = storage.getPlayers();
+    
+    // Algorithme de Fisher-Yates pour mélanger les joueurs
+    const shuffleArray = <T,>(array: T[]): T[] => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
+    // Mélanger les joueurs
+    const shuffledPlayers = shuffleArray(players);
+    
+    // Mélanger les missions
+    const shuffledMissions = shuffleArray(missionTexts);
+    
+    // Créer les couples tueur/victime en cercle fermé et associer les missions mélangées
+    const finalMissions: Mission[] = shuffledPlayers.map((killer, index) => ({
+      killer: killer.name,
+      target: shuffledPlayers[(index + 1) % shuffledPlayers.length].name,
+      mission: shuffledMissions[index],
+    }));
+    
+    setGameState({
+      players,
+      missions: finalMissions,
+      currentPlayerIndex: 0,
+      isRevealed: false,
+      gameStarted: false,
+    });
+
+    setScreen('reveal');
   };
 
   const handleRevealNext = () => {
@@ -187,11 +232,20 @@ function App() {
         />
       );
     
+    case 'manualMissions':
+      return (
+        <ManualMissionScreen
+          players={storage.getPlayers()}
+          onComplete={handleManualMissionsComplete}
+        />
+      );
+    
     case 'reveal':
       const mission = getCurrentMission();
       if (!mission) return null;
       return (
         <RevealScreen
+          key={`reveal-${gameState?.currentPlayerIndex}`}
           currentKiller={getCurrentKiller()}
           mission={mission}
           isLast={gameState?.currentPlayerIndex === (gameState?.missions.length ?? 0) - 1}

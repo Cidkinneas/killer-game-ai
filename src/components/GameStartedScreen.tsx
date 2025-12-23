@@ -1,22 +1,10 @@
-import { useState } from 'react';
-import { RotateCcw, Trash2 } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { RotateCcw } from 'lucide-react';
 
 interface GameStartedScreenProps {
   onNewGame: () => void;
 }
 
 export const GameStartedScreen = ({ onNewGame }: GameStartedScreenProps) => {
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
-
-  const handleReset = () => {
-    if (showResetConfirm) {
-      storage.clearAllData();
-      window.location.reload();
-    } else {
-      setShowResetConfirm(true);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-900 p-6 flex flex-col items-center justify-center">
@@ -52,36 +40,6 @@ export const GameStartedScreen = ({ onNewGame }: GameStartedScreenProps) => {
             <RotateCcw className="w-5 h-5" />
             Nouvelle partie
           </button>
-
-          {showResetConfirm ? (
-            <div className="bg-red-900/30 border border-red-700 rounded-lg p-4">
-              <p className="text-sm text-red-300 mb-3">
-                ⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ? Cette action est irréversible.
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleReset}
-                  className="flex-1 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-semibold transition-colors"
-                >
-                  Oui, tout supprimer
-                </button>
-                <button
-                  onClick={() => setShowResetConfirm(false)}
-                  className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-colors"
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={handleReset}
-              className="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors text-gray-300"
-            >
-              <Trash2 className="w-5 h-5" />
-              Réinitialiser toutes les données
-            </button>
-          )}
         </div>
       </div>
     </div>
