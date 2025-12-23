@@ -67,6 +67,67 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
+// Fonction pour créer une assignation aléatoire des cibles
+// Chaque joueur a une cible unique et différente de lui-même (permutation aléatoire)
+const assignRandomTargets = (players: Player[]): Map<Player, Player> => {
+  const assignment = new Map<Player, Player>();
+  
+  // Cas spécial : si un seul joueur, pas de cible possible
+  if (players.length <= 1) {
+    return assignment;
+  }
+  
+  // Créer une permutation aléatoire des cibles
+  let targets = shuffleArray([...players]);
+  
+  // Vérifier et corriger les cas où un joueur est sa propre cible
+  // On itère jusqu'à ce qu'on ait une permutation valide
+  let attempts = 0;
+  const maxAttempts = 100;
+  
+  while (attempts < maxAttempts) {
+    let hasSelfTarget = false;
+    
+    // Vérifier s'il y a des joueurs assignés à eux-mêmes
+    for (let i = 0; i < players.length; i++) {
+      if (targets[i].name === players[i].name) {
+        hasSelfTarget = true;
+        // Échanger avec un autre joueur aléatoire
+        const swapIndex = Math.floor(Math.random() * players.length);
+        if (swapIndex !== i) {
+          [targets[i], targets[swapIndex]] = [targets[swapIndex], targets[i]];
+        }
+      }
+    }
+    
+    // Si aucune auto-assignation, on a une permutation valide
+    if (!hasSelfTarget) {
+      break;
+    }
+    
+    attempts++;
+    
+    // Si trop d'essais, remélanger complètement
+    if (attempts >= maxAttempts) {
+      targets = shuffleArray([...players]);
+      // Dernière correction manuelle si nécessaire
+      for (let i = 0; i < players.length; i++) {
+        if (targets[i].name === players[i].name) {
+          const nextIndex = (i + 1) % players.length;
+          [targets[i], targets[nextIndex]] = [targets[nextIndex], targets[i]];
+        }
+      }
+    }
+  }
+  
+  // Créer l'assignation finale
+  for (let i = 0; i < players.length; i++) {
+    assignment.set(players[i], targets[i]);
+  }
+  
+  return assignment;
+};
+
 export const generateAllMissions = async (
   players: Player[],
   useOpenAI: boolean,
@@ -76,6 +137,9 @@ export const generateAllMissions = async (
 ): Promise<Mission[]> => {
   // Mélanger les joueurs de manière aléatoire avec Fisher-Yates
   const shuffled = shuffleArray(players);
+  
+  // Assigner des cibles de manière aléatoire (pas juste la personne suivante)
+  const targetAssignment = assignRandomTargets(shuffled);
   
   // Pour le mode sans clé : mélanger les missions prédéfinies une seule fois
   let shuffledMissions: string[] = [];
@@ -87,7 +151,7 @@ export const generateAllMissions = async (
   
   for (let i = 0; i < shuffled.length; i++) {
     const killer = shuffled[i];
-    const target = shuffled[(i + 1) % shuffled.length];
+    const target = targetAssignment.get(killer)!;
     
     onProgress?.(i + 1, shuffled.length);
     
