@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Plus, X, Users, Play, Settings, Key, Sparkles, Edit3 } from 'lucide-react';
 import { Player, GenerationMode } from '../types';
 import { storage } from '../utils/storage';
+import { PREDEFINED_MISSIONS_COUNT } from '../data/missions';
 
 interface PlayerListScreenProps {
   onGenerate: (players: Player[], mode: GenerationMode) => void;
@@ -152,7 +153,7 @@ export const PlayerListScreen = ({ onGenerate, onSettings }: PlayerListScreenPro
                         Mode Sans Clé
                       </div>
                       <p className="text-xs text-gray-400 mt-1">
-                        100 missions prédéfinies amusantes
+                        {PREDEFINED_MISSIONS_COUNT} missions prédéfinies amusantes
                       </p>
                     </div>
                   </label>

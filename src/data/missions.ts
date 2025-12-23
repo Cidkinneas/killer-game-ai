@@ -1,4 +1,4 @@
-// Liste de 100 missions prédéfinies pour le mode sans clé OpenAI
+// Liste de missions prédéfinies pour le mode sans clé OpenAI
 // Missions adaptées pour être jouées en famille, entre amis et collègues
 export const PREDEFINED_MISSIONS = [
   "Ta cible doit chercher un objet rouge et un objet vert dans la maison.",
@@ -17,6 +17,9 @@ export const PREDEFINED_MISSIONS = [
   "Lui faire faire un pierre-feuille-ciseaux",
   "Lui faire goûter quelque chose les yeux fermés",
 ];
+
+// Nombre de missions prédéfinies
+export const PREDEFINED_MISSIONS_COUNT = PREDEFINED_MISSIONS.length;
 
 // Fonction pour obtenir une mission aléatoire
 export const getRandomMission = (): string => {

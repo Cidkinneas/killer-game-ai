@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Save, Key, ExternalLink, HelpCircle, Sparkles } from 'lucide-react';
 import { storage } from '../utils/storage';
+import { PREDEFINED_MISSIONS_COUNT } from '../data/missions';
 
 interface SettingsScreenProps {
   onNext: () => void;
@@ -80,10 +81,10 @@ export const SettingsScreen = ({ onNext }: SettingsScreenProps) => {
               <div className="flex-1">
                 <div className="font-semibold text-white flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Mode Sans Clé (100 missions prédéfinies)
+                  Mode Sans Clé ({PREDEFINED_MISSIONS_COUNT} missions prédéfinies)
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Utilise une liste de 100 missions amusantes
+                  Utilise une liste de {PREDEFINED_MISSIONS_COUNT} missions amusantes
                 </p>
               </div>
             </label>

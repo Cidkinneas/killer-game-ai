@@ -1,5 +1,5 @@
 import { Player, Mission } from '../types';
-import { getRandomMission } from '../data/missions';
+import { getRandomMission, PREDEFINED_MISSIONS_COUNT } from '../data/missions';
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
@@ -47,7 +47,7 @@ export const generateMission = async ({
       throw new Error('Clé API invalide. Vérifiez vos paramètres.');
     }
     if (response.status === 429) {
-      throw new Error('QUOTA_API_DEPASSE: Le quota de votre clé API OpenAI a été dépassé. Vous pouvez utiliser le mode sans clé avec 100 missions prédéfinies comme alternative.');
+      throw new Error(`QUOTA_API_DEPASSE: Le quota de votre clé API OpenAI a été dépassé. Vous pouvez utiliser le mode sans clé avec ${PREDEFINED_MISSIONS_COUNT} missions prédéfinies comme alternative.`);
     }
     throw new Error(error.error?.message || 'Erreur lors de la génération de la mission.');
   }

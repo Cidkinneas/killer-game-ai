@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Screen, Player, Mission, GameState, GenerationMode } from './types';
 import { storage } from './utils/storage';
 import { generateAllMissions } from './utils/openai';
+import { PREDEFINED_MISSIONS_COUNT } from './data/missions';
 import { HomeScreen } from './components/HomeScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { PlayerListScreen } from './components/PlayerListScreen';
@@ -167,7 +168,7 @@ function App() {
                   <strong className="text-white">Que faire maintenant ?</strong>
                 </p>
                 <ul className="text-sm text-gray-400 space-y-2 list-disc list-inside">
-                  <li>Utilisez le <strong className="text-white">mode sans clé</strong> avec 100 missions prédéfinies</li>
+                  <li>Utilisez le <strong className="text-white">mode sans clé</strong> avec {PREDEFINED_MISSIONS_COUNT} missions prédéfinies</li>
                   <li>Attendez que votre quota OpenAI soit renouvelé</li>
                   <li>Vérifiez votre compte OpenAI pour augmenter votre limite</li>
                 </ul>
